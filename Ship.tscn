@@ -18,9 +18,21 @@ texture = ExtResource( 2 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
 
-[node name="Camera2D" type="Camera2D" parent="."]
-current = true
+[node name="FlameBottom" type="Sprite" parent="."]
+position = Vector2( 0, 115 )
+rotation = 3.14159
+texture = ExtResource( 3 )
+hframes = 6
 
-[node name="Flame" type="Sprite" parent="."]
+[node name="FlameLeft" type="Sprite" parent="."]
+position = Vector2( -100, 40 )
+rotation = -1.74533
+texture = ExtResource( 3 )
+hframes = 6
+
+[node name="FlameRight" type="Sprite" parent="."]
+position = Vector2( 105, 40 )
+rotation = 1.74533
+scale = Vector2( -1, 1 )
 texture = ExtResource( 3 )
 hframes = 6

@@ -1,12 +1,31 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Ship.tscn" type="PackedScene" id=1]
-[ext_resource path="res://assets/land.png" type="Texture" id=2]
+[ext_resource path="res://Fuel.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Fuel.gd" type="Script" id=3]
+[ext_resource path="res://assets/land.png" type="Texture" id=4]
 
 [node name="World" type="Node2D"]
 
 [node name="Ship" parent="." instance=ExtResource( 1 )]
 mode = 0
+
+[node name="Camera2D" type="Camera2D" parent="Ship"]
+current = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Ship/Camera2D"]
+
+[node name="Control" type="Control" parent="Ship/Camera2D/CanvasLayer"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="FuelBar" parent="Ship/Camera2D/CanvasLayer/Control" instance=ExtResource( 2 )]
+margin_left = -10.0
+margin_top = 20.0
+margin_right = 1690.0
+margin_bottom = 598.0
+rect_scale = Vector2( 0.1, 0.1 )
+script = ExtResource( 3 )
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 position = Vector2( 100, 0 )
@@ -17,4 +36,5 @@ polygon = PoolVector2Array( -1412.24, 1834.77, -1133.48, 1612.79, -1009.58, 1365
 
 [node name="Sprite" type="Sprite" parent="StaticBody2D"]
 position = Vector2( 508.995, 1084.38 )
-texture = ExtResource( 2 )
+texture = ExtResource( 4 )
+[connection signal="fuel_update" from="Ship" to="Ship/Camera2D/CanvasLayer/Control/FuelBar" method="_on_Ship_fuel_update"]
