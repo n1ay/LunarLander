@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://assets/DejaVuSans-Bold-100.res" type="DynamicFont" id=1]
+[ext_resource path="res://assets/ship.png" type="Texture" id=2]
+
+[node name="Title" type="HBoxContainer"]
+margin_right = 1160.0
+margin_bottom = 117.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="."]
+margin_right = 900.0
+margin_bottom = 117.0
+rect_min_size = Vector2( 900, 0 )
+custom_fonts/font = ExtResource( 1 )
+text = "LUNAR LANDER"
+uppercase = true
+
+[node name="TextureRect" type="TextureRect" parent="."]
+margin_left = 904.0
+margin_right = 1033.0
+margin_bottom = 117.0
+rect_min_size = Vector2( 129, 117 )
+texture = ExtResource( 2 )
+expand = true
+stretch_mode = 6
