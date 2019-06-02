@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://assets/TitleScreen.gd" type="Script" id=1]
+[ext_resource path="res://TitleScreen.gd" type="Script" id=1]
 [ext_resource path="res://Title.tscn" type="PackedScene" id=2]
 [ext_resource path="res://NewGameButton.tscn" type="PackedScene" id=3]
 [ext_resource path="res://ExitGameButton.tscn" type="PackedScene" id=4]
+[ext_resource path="res://ParallaxBackground.gd" type="Script" id=5]
+[ext_resource path="res://assets/stars_bg.jpg" type="Texture" id=6]
 
 [node name="TitleScreen" type="Control"]
 anchor_right = 1.0
@@ -43,5 +45,22 @@ margin_top = 104.0
 margin_bottom = 204.0
 rect_min_size = Vector2( 200, 100 )
 flat = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="CanvasLayer"]
+script = ExtResource( 5 )
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+
+[node name="Background" type="Sprite" parent="CanvasLayer/ParallaxBackground/ParallaxLayer"]
+texture = ExtResource( 6 )
+centered = false
+
+[node name="ParallaxLayer2" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+
+[node name="Background2" type="Sprite" parent="CanvasLayer/ParallaxBackground/ParallaxLayer2"]
+texture = ExtResource( 6 )
+centered = false
 [connection signal="pressed" from="Menu/Center/Buttons/NewGame" to="." method="_on_NewGame_pressed"]
 [connection signal="pressed" from="Menu/Center/Buttons/Exit" to="." method="_on_Exit_pressed"]

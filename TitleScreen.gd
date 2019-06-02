@@ -12,4 +12,4 @@ func _on_NewGame_pressed():
 
 
 func _on_Exit_pressed():
-	print('Exit pressed')
+	get_tree().quit()
