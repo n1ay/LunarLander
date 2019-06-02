@@ -8,6 +8,10 @@ var MAX_FUEL = 100
 var USE_FUEL = 0.1
 var CRITICAL_VELOCITY = 500
 var CRITICAL_Y_POS = 5
+var LEVEL_COMPLETED_MAX_VELOCITY_ALLOWED = 0.1
+var LEVEL_COMPLETED_MAX_ROTATION = 1
+
+var ZERO_VECTOR = Vector2(0, 0)
 
 signal fuel_update(value)
 
@@ -25,10 +29,15 @@ var fuel_previous = fuel
 var collision_pos_lst
 var previous_velocity
 
+# level completed
+var end_collision_collision
+
 ## functions
 func _ready():
-	previous_velocity = Vector2(0, 0)
+	end_collision_collision = false
+	previous_velocity = ZERO_VECTOR
 	emit_signal("fuel_update", MAX_FUEL)
+	
 	flames = [$FlameBottom, $FlameLeft, $FlameRight]
 	flameTimers = [Timer.new(), Timer.new(), Timer.new()]
 	flameAnimations = [1, 1, 1]
@@ -68,10 +77,13 @@ func updateFlames(showFlames):
 			timer.stop()
 
 func _integrate_forces(state):
+	end_collision_collision = false
 	collision_pos_lst = []
 	var rotation = get_rotation_degrees()
 	var position = get_position()
 	for i in range(state.get_contact_count()):
+		if state.get_contact_collider_object(i) == get_node("/root/World/LevelGenerator/Level/EndPlatform"):
+			end_collision_collision = true
 		var ship_col_pos = (state.get_contact_local_position(i) - position).rotated(deg2rad(-rotation))
 		collision_pos_lst.append(ship_col_pos)
 
@@ -107,7 +119,7 @@ func _process(delta):
 		fuel_previous = fuel
 		emit_signal("fuel_update", fuel)
 		
-	print(previous_velocity.distance_to(Vector2()))
+	print(previous_velocity.distance_to(ZERO_VECTOR))
 	if len(collision_pos_lst) > 0:
 		var collision_min_y = collision_pos_lst[0].y
 		for i in collision_pos_lst:
@@ -115,8 +127,13 @@ func _process(delta):
 				collision_min_y = i.y
 		if collision_min_y < CRITICAL_Y_POS:
 			print('BOOMY!')
-		elif previous_velocity.distance_to(Vector2(0, 0)) > CRITICAL_VELOCITY:
+		elif previous_velocity.distance_to(ZERO_VECTOR) > CRITICAL_VELOCITY:
 			print('KBOOM!')
-		
+	
+	if previous_velocity.distance_to(ZERO_VECTOR) <= LEVEL_COMPLETED_MAX_VELOCITY_ALLOWED\
+	and linear_velocity.distance_to(ZERO_VECTOR) <= LEVEL_COMPLETED_MAX_VELOCITY_ALLOWED\
+	and get_rotation_degrees() <= LEVEL_COMPLETED_MAX_ROTATION:
+		print('LEVEL COMPLETED!')
+	
 	if previous_velocity != linear_velocity:
 		previous_velocity = linear_velocity

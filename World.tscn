@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Ship.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Fuel.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Fuel.gd" type="Script" id=3]
-[ext_resource path="res://assets/land.png" type="Texture" id=4]
+[ext_resource path="res://Level.gd" type="Script" id=4]
+[ext_resource path="res://LevelTexture.gd" type="Script" id=5]
+[ext_resource path="res://Platform.tscn" type="PackedScene" id=6]
 
 [node name="World" type="Node2D"]
 
@@ -27,14 +29,24 @@ margin_bottom = 598.0
 rect_scale = Vector2( 0.1, 0.1 )
 script = ExtResource( 3 )
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
+[node name="LevelGenerator" type="Node2D" parent="."]
+
+[node name="Level" type="StaticBody2D" parent="LevelGenerator"]
 position = Vector2( 100, 0 )
 z_index = -1
+script = ExtResource( 4 )
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D"]
-polygon = PoolVector2Array( -1412.24, 1834.77, -1133.48, 1612.79, -1009.58, 1365, -834.065, 1266.92, -725.656, 1013.96, -617.247, 1075.91, -488.19, 879.744, -426.242, 564.842, -348.807, 559.68, -214.587, 745.524, -126.827, 797.147, -59.7173, 1008.8, -111.34, 1039.78, -121.665, 1225.62, -70.042, 1235.94, -80.3665, 1297.89, -292.021, 1535.36, -307.508, 1617.95, -235.236, 1695.39, -116.503, 1741.85, 100.314, 1757.34, 115.802, 1669.58, 198.398, 1623.12, 275.833, 1623.12, 384.242, 1488.9, 410.053, 1225.62, 446.19, 1230.78, 539.111, 683.576, 693.981, 740.361, 905.636, 967.503, 998.558, 1204.97, 890.149, 1349.51, 854.013, 1473.41, 921.123, 1561.17, 967.584, 1365, 1055.34, 1406.3, 1117.29, 1055.26, 1199.89, 1086.24, 1230.86, 962.341, 1230.86, 446.109, 1375.41, 508.057, 1654.17, 187.993, 1855.5, 446.109, 2031.02, 926.204, 2015.53, 1091.4, 1917.45, 1096.56, 2144.59, 1690.23, 2320.11, 1204.97, 2428.52, 1339.19, 2428.52, 2149.67, -1412.24, 2170.32 )
+[node name="LevelCollisionPolygon" type="CollisionPolygon2D" parent="LevelGenerator/Level"]
 
-[node name="Sprite" type="Sprite" parent="StaticBody2D"]
-position = Vector2( 508.995, 1084.38 )
-texture = ExtResource( 4 )
+[node name="LevelCanvas" type="TextureRect" parent="LevelGenerator/Level"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 5 )
+
+[node name="BeginPlatform" parent="LevelGenerator/Level" instance=ExtResource( 6 )]
+position = Vector2( -417.528, 286.348 )
+
+[node name="EndPlatform" parent="LevelGenerator/Level" instance=ExtResource( 6 )]
+position = Vector2( -209.252, 146.035 )
 [connection signal="fuel_update" from="Ship" to="Ship/Camera2D/CanvasLayer/Control/FuelBar" method="_on_Ship_fuel_update"]
+[connection signal="draw_polygon" from="LevelGenerator/Level" to="LevelGenerator/Level/LevelCanvas" method="_on_Level_draw_polygon"]
