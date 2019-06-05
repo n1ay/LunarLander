@@ -10,12 +10,20 @@ var CRITICAL_VELOCITY = 500
 var CRITICAL_Y_POS = 5
 var LEVEL_COMPLETED_MAX_VELOCITY_ALLOWED = 0.1
 var LEVEL_COMPLETED_MAX_ROTATION = 1
+var MAX_END_PLATFORM_DISTANCE = 4000
+var NO_FUEL_TIMER = 5
+var RESET_PROCESS_DURATION = 1.5
 
 var ZERO_VECTOR = Vector2(0, 0)
 
 signal fuel_update(value)
+signal level_completed()
+signal game_over()
 
 ## variables
+var reset_process_timer
+var process
+
 # flames
 var flames
 var flameTimers
@@ -24,17 +32,20 @@ var flameAnimations
 # fuel
 var fuel = MAX_FUEL
 var fuel_previous = fuel
+var no_fuel_timer
 
 # collisions
 var collision_pos_lst
 var previous_velocity
 
 # level completed
-var end_collision_collision
+var end_collision_detected
+var end_platform
 
 ## functions
 func _ready():
-	end_collision_collision = false
+	end_collision_detected = false
+	end_platform = get_node("/root/World/LevelGenerator/Level/EndPlatform")
 	previous_velocity = ZERO_VECTOR
 	emit_signal("fuel_update", MAX_FUEL)
 	
@@ -49,6 +60,17 @@ func _ready():
 		var timer = flameTimers[i]
 		add_child(timer)
 		timer.connect("timeout", self, "animateFlames", [i])
+		
+	no_fuel_timer = Timer.new()
+	add_child(no_fuel_timer)
+	no_fuel_timer.connect("timeout", self, "emit_signal", ["game_over"])
+	no_fuel_timer.one_shot = true
+
+	process = true
+	reset_process_timer = Timer.new()
+	add_child(reset_process_timer)
+	reset_process_timer.connect("timeout", self, "enable_process")
+	reset_process_timer.one_shot = true
 
 func animateFlames(index):
 	var flame = flames[index]
@@ -76,17 +98,24 @@ func updateFlames(showFlames):
 			flame.hide()
 			timer.stop()
 
+func enable_process():
+	process = true
+
+func reset_process():
+	process = false
+	reset_process_timer.start(RESET_PROCESS_DURATION)
+
 func _integrate_forces(state):
-	end_collision_collision = false
+	end_collision_detected = false
 	collision_pos_lst = []
 	var rotation = get_rotation_degrees()
 	var position = get_position()
 	for i in range(state.get_contact_count()):
-		if state.get_contact_collider_object(i) == get_node("/root/World/LevelGenerator/Level/EndPlatform"):
-			end_collision_collision = true
+		if state.get_contact_collider_object(i) == end_platform:
+			end_collision_detected = true
 		var ship_col_pos = (state.get_contact_local_position(i) - position).rotated(deg2rad(-rotation))
 		collision_pos_lst.append(ship_col_pos)
-
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	var rotation = deg2rad(get_rotation_degrees())
@@ -118,22 +147,37 @@ func _process(delta):
 	if (fuel_previous != fuel):
 		fuel_previous = fuel
 		emit_signal("fuel_update", fuel)
+	
+	if process:
+		## GAME OVER ##	
+		#print(previous_velocity.distance_to(ZERO_VECTOR))
+		if len(collision_pos_lst) > 0:
+			var collision_min_y = collision_pos_lst[0].y
+			for i in collision_pos_lst:
+				if i.y < collision_min_y:
+					collision_min_y = i.y
+			if collision_min_y < CRITICAL_Y_POS:
+				emit_signal("game_over")
+				return
+			elif previous_velocity.distance_to(ZERO_VECTOR) > CRITICAL_VELOCITY:
+				emit_signal("game_over")
+				return
 		
-	print(previous_velocity.distance_to(ZERO_VECTOR))
-	if len(collision_pos_lst) > 0:
-		var collision_min_y = collision_pos_lst[0].y
-		for i in collision_pos_lst:
-			if i.y < collision_min_y:
-				collision_min_y = i.y
-		if collision_min_y < CRITICAL_Y_POS:
-			print('BOOMY!')
-		elif previous_velocity.distance_to(ZERO_VECTOR) > CRITICAL_VELOCITY:
-			print('KBOOM!')
-	
-	if previous_velocity.distance_to(ZERO_VECTOR) <= LEVEL_COMPLETED_MAX_VELOCITY_ALLOWED\
-	and linear_velocity.distance_to(ZERO_VECTOR) <= LEVEL_COMPLETED_MAX_VELOCITY_ALLOWED\
-	and get_rotation_degrees() <= LEVEL_COMPLETED_MAX_ROTATION:
-		print('LEVEL COMPLETED!')
-	
-	if previous_velocity != linear_velocity:
-		previous_velocity = linear_velocity
+		if (get_position() - end_platform.get_position()).distance_to(ZERO_VECTOR) >= MAX_END_PLATFORM_DISTANCE:
+			emit_signal("game_over")
+			return
+			
+		if fuel <= 0 and no_fuel_timer.is_stopped():
+			no_fuel_timer.start(NO_FUEL_TIMER)
+		## ---------------------------------------------- ##
+		
+		## LEVEL COMPLETED ##
+		if previous_velocity.distance_to(ZERO_VECTOR) <= LEVEL_COMPLETED_MAX_VELOCITY_ALLOWED\
+		and linear_velocity.distance_to(ZERO_VECTOR) <= LEVEL_COMPLETED_MAX_VELOCITY_ALLOWED\
+		and get_rotation_degrees() <= LEVEL_COMPLETED_MAX_ROTATION and end_collision_detected:
+			emit_signal("level_completed")
+			return
+		## ---------------------------------------------- ##
+		
+		if previous_velocity != linear_velocity:
+			previous_velocity = linear_velocity

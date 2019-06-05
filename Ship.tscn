@@ -8,6 +8,7 @@
 points = PoolVector2Array( 0, -65, 30, -30, 50, 0, 50, 60, -50, 60, -50, 0, -30, -30 )
 
 [node name="Ship" type="RigidBody2D"]
+editor/display_folded = true
 mode = 2
 contacts_reported = 3
 contact_monitor = true
