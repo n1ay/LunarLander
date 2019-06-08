@@ -59,7 +59,9 @@ var crash_animation_playing
 
 ## functions
 func _ready():
-	set_friction(FRICTION)
+	var physics_material = PhysicsMaterial.new()
+	physics_material.set_friction(FRICTION)
+	set_physics_material_override(physics_material)
 	end_collision_detected = false
 	end_platform = get_node("/root/World/LevelGenerator/Level/EndPlatform")
 	previous_velocity = ZERO_VECTOR
@@ -219,15 +221,18 @@ func _process(delta):
 					collision_min_y = i.y
 			if collision_min_y < CRITICAL_Y_POS:
 				emit_signal("game_over")
+				no_fuel_timer.stop()
 				on_crash()
 				return
 			elif previous_velocity.distance_to(ZERO_VECTOR) > CRITICAL_VELOCITY:
 				emit_signal("game_over")
+				no_fuel_timer.stop()
 				on_crash()
 				return
 		
 		if (get_position() - end_platform.get_position()).distance_to(ZERO_VECTOR) >= MAX_END_PLATFORM_DISTANCE:
 			emit_signal("game_over")
+			no_fuel_timer.stop()
 			return
 			
 		if fuel <= 0 and no_fuel_timer.is_stopped():

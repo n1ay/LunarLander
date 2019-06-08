@@ -77,6 +77,10 @@ margin_right = 40.0
 margin_bottom = 14.0
 size_flags_horizontal = 4
 custom_fonts/font = ExtResource( 7 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_colors/font_outline_modulate = Color( 0, 0, 0, 1 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+custom_constants/shadow_as_outline = 1
 text = "GG EASY"
 uppercase = true
 [connection signal="fuel_update" from="Ship" to="Ship/Camera2D/CanvasLayer/Control/FuelBar" method="_on_Ship_fuel_update"]
