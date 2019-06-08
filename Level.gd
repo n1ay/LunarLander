@@ -86,26 +86,26 @@ func load_level_generic():
 
 func load_level1():
 	sprite.set_texture(preload("res://assets/level1.png"))
-	begin_platform.set_position(Vector2(-1900, 650))
-	end_platform.set_position(Vector2(700, 650))
+	begin_platform.set_position(Vector2(-1600, 660))
+	end_platform.set_position(Vector2(700, 640))
 	load_level_generic()
 	
 func load_level2():
 	sprite.set_texture(preload("res://assets/level2.png"))
-	begin_platform.set_position(Vector2(-1850, 770))
+	begin_platform.set_position(Vector2(-1540, 770))
 	end_platform.set_position(Vector2(1200, 800))
 	load_level_generic()
 	
 func load_level3():
 	sprite.set_texture(preload("res://assets/level3.png"))
-	begin_platform.set_position(Vector2(-1850, 770))
-	end_platform.set_position(Vector2(1400, 900))
+	begin_platform.set_position(Vector2(-1700, 780))
+	end_platform.set_position(Vector2(1400, 890))
 	load_level_generic()
 	
 func load_level4():
 	sprite.set_texture(preload("res://assets/level4.png"))
-	begin_platform.set_position(Vector2(-1875, 770))
-	end_platform.set_position(Vector2(-400, -180))
+	begin_platform.set_position(Vector2(-1675, 780))
+	end_platform.set_position(Vector2(-70, -170))
 	load_level_generic()
 
 func freeze_ship(set_gravity=true):

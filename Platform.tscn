@@ -6,6 +6,7 @@
 points = PoolVector2Array( -240, -70, 240, -70, 280, -50, 320, 70, -320, 70, -280, -50 )
 
 [node name="Platform" type="StaticBody2D"]
+scale = Vector2( 0.9, 0.9 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
