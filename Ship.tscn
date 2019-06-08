@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Ship.gd" type="Script" id=1]
 [ext_resource path="res://assets/ship.png" type="Texture" id=2]
 [ext_resource path="res://assets/flame_bw.png" type="Texture" id=3]
+[ext_resource path="res://assets/ramjet2.ogg" type="AudioStream" id=4]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 0, -65, 30, -30, 50, 0, 50, 60, -50, 60, -50, 0, -30, -30 )
@@ -38,3 +39,6 @@ rotation = 1.74533
 scale = Vector2( -1, 1 )
 texture = ExtResource( 3 )
 hframes = 6
+
+[node name="EngineAudioPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 4 )

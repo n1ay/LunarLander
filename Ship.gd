@@ -42,6 +42,10 @@ var previous_velocity
 var end_collision_detected
 var end_platform
 
+# sfx
+var engine_audio_player
+var engine_sound_playing
+
 ## functions
 func _ready():
 	end_collision_detected = false
@@ -71,6 +75,10 @@ func _ready():
 	add_child(reset_process_timer)
 	reset_process_timer.connect("timeout", self, "enable_process")
 	reset_process_timer.one_shot = true
+	
+	get_viewport().audio_listener_enable_2d = true
+	engine_audio_player = $EngineAudioPlayer
+	engine_sound_playing = false
 
 func animateFlames(index):
 	var flame = flames[index]
@@ -84,6 +92,15 @@ func animateFlames(index):
 	timer.start(FLAME_TIMER_TICK)
 
 func updateFlames(showFlames):
+	if (len(showFlames) > 0):
+		if not(engine_sound_playing):
+			engine_sound_playing = true
+			engine_audio_player.play()
+	else:
+		if engine_sound_playing:
+			engine_sound_playing = false
+			engine_audio_player.stop()
+
 	for i in range(len(flames)):
 		var flame = flames[i]
 		if showFlames.has(flame) and not(flame.visible):
