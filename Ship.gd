@@ -1,7 +1,7 @@
 extends RigidBody2D
 
 ## constants
-var THROTTLE_IMPULSE = 10
+var THROTTLE_IMPULSE = 400
 var POSITION_OFFSET = 30
 var FLAME_TIMER_TICK = 0.1
 var MAX_FUEL = 100
@@ -124,22 +124,22 @@ func _process(delta):
 	
 	var showFlames = []
 	
-	if (fuel > 0):
+	if (fuel > 0 and process):
 		if Input.is_action_pressed("ui_up"):
 			var offset_up = Vector2(0, POSITION_OFFSET)
-			apply_impulse(offset_up.rotated(rotation), -THROTTLE_IMPULSE * direction)
+			apply_impulse(offset_up.rotated(rotation), -THROTTLE_IMPULSE * direction * delta)
 			showFlames.append($FlameBottom)
 			fuel -= USE_FUEL
 			
 		if Input.is_action_pressed("ui_right") and not(Input.is_action_pressed("ui_left")):
 			var offset_right = Vector2(-POSITION_OFFSET, POSITION_OFFSET)
-			apply_impulse(offset_right.rotated(rotation), -THROTTLE_IMPULSE * direction_rot_by_right_angle)
+			apply_impulse(offset_right.rotated(rotation), -THROTTLE_IMPULSE * direction_rot_by_right_angle * delta)
 			showFlames.append($FlameLeft)
 			fuel -= USE_FUEL
 			
 		if Input.is_action_pressed("ui_left") and not(Input.is_action_pressed("ui_right")):
 			var offset_left = Vector2(POSITION_OFFSET, POSITION_OFFSET)
-			apply_impulse(offset_left.rotated(rotation), THROTTLE_IMPULSE * direction_rot_by_right_angle)
+			apply_impulse(offset_left.rotated(rotation), THROTTLE_IMPULSE * direction_rot_by_right_angle * delta)
 			showFlames.append($FlameRight)
 			fuel -= USE_FUEL
 	
@@ -175,6 +175,7 @@ func _process(delta):
 		if previous_velocity.distance_to(ZERO_VECTOR) <= LEVEL_COMPLETED_MAX_VELOCITY_ALLOWED\
 		and linear_velocity.distance_to(ZERO_VECTOR) <= LEVEL_COMPLETED_MAX_VELOCITY_ALLOWED\
 		and get_rotation_degrees() <= LEVEL_COMPLETED_MAX_ROTATION and end_collision_detected:
+			no_fuel_timer.stop()
 			emit_signal("level_completed")
 			return
 		## ---------------------------------------------- ##
