@@ -2,6 +2,7 @@ extends RigidBody2D
 
 ## constants
 var THROTTLE_IMPULSE = 400
+var FRICTION = 0.75
 var POSITION_OFFSET = 30
 var FLAME_TIMER_TICK = 0.1
 var MAX_FUEL = 100
@@ -13,6 +14,7 @@ var LEVEL_COMPLETED_MAX_ROTATION = 1
 var MAX_END_PLATFORM_DISTANCE = 4000
 var NO_FUEL_TIMER = 5
 var RESET_PROCESS_DURATION = 1.5
+var CRASH_SPRITE_ANIMATION_TICK = 0.07
 
 var ZERO_VECTOR = Vector2(0, 0)
 
@@ -46,8 +48,18 @@ var end_platform
 var engine_audio_player
 var engine_sound_playing
 
+var crash_audio_player
+var crash_sound_playing
+
+# sprites
+var ship_sprite
+var crash_sprite
+var crash_sprite_animation_timer
+var crash_animation_playing
+
 ## functions
 func _ready():
+	set_friction(FRICTION)
 	end_collision_detected = false
 	end_platform = get_node("/root/World/LevelGenerator/Level/EndPlatform")
 	previous_velocity = ZERO_VECTOR
@@ -79,6 +91,38 @@ func _ready():
 	get_viewport().audio_listener_enable_2d = true
 	engine_audio_player = $EngineAudioPlayer
 	engine_sound_playing = false
+	
+	crash_audio_player = $CrashAudioPlayer
+	crash_sound_playing = false
+	
+	ship_sprite = $Sprite
+	crash_sprite = $CrashSprite
+	crash_sprite.hide()
+	crash_sprite_animation_timer = Timer.new()
+	add_child(crash_sprite_animation_timer)
+	crash_sprite_animation_timer.connect("timeout", self, "animate_crash")
+	crash_animation_playing = false
+	
+func animate_crash():
+	if crash_sprite.frame + 1 < crash_sprite.hframes:
+		crash_sprite.frame += 1
+		crash_sprite_animation_timer.start(CRASH_SPRITE_ANIMATION_TICK)
+	else:
+		crash_sprite.hide()
+
+func play_crash_animation():
+	if not(crash_animation_playing):
+		crash_animation_playing = true
+		ship_sprite.hide()
+		crash_sprite.frame = 0
+		crash_sprite.show()
+		crash_sprite_animation_timer.start(CRASH_SPRITE_ANIMATION_TICK)
+
+func on_crash():
+	if not(crash_sound_playing):
+		crash_audio_player.play()
+		crash_sound_playing = true
+	play_crash_animation()
 
 func animateFlames(index):
 	var flame = flames[index]
@@ -175,9 +219,11 @@ func _process(delta):
 					collision_min_y = i.y
 			if collision_min_y < CRITICAL_Y_POS:
 				emit_signal("game_over")
+				on_crash()
 				return
 			elif previous_velocity.distance_to(ZERO_VECTOR) > CRITICAL_VELOCITY:
 				emit_signal("game_over")
+				on_crash()
 				return
 		
 		if (get_position() - end_platform.get_position()).distance_to(ZERO_VECTOR) >= MAX_END_PLATFORM_DISTANCE:

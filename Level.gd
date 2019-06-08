@@ -14,7 +14,9 @@ var game_over_label = "You lose"
 var level_completed_label = "GG easy"
 var event_label
 var label_visible_timer
-var LABEL_VISIBLE_TIME = 2
+var LABEL_VISIBLE_TIME = 1.5
+
+var reset_level_timer
 
 func _ready():
 	begin_platform = $BeginPlatform
@@ -43,6 +45,11 @@ func _ready():
 	label_visible_timer = Timer.new()
 	add_child(label_visible_timer)
 	label_visible_timer.connect("timeout", self, "hide_event_label")
+	
+	reset_level_timer = Timer.new()
+	add_child(reset_level_timer)
+	reset_level_timer.connect("timeout", self, "reset_variables")
+	reset_level_timer.one_shot = true
 	
 	load_level1()
 	level_colliders[0].set_disabled(false)
@@ -88,16 +95,26 @@ func load_level4():
 	end_platform.set_position(Vector2(-400, -180))
 	set_ship_starting_pos()
 
+func freeze_ship():
+	ship.linear_velocity = Vector2(0, 0)
+	ship.angular_velocity = 0
+	ship.gravity_scale = 0
+	ship.process = false
+	reset_level_timer.start(ship.RESET_PROCESS_DURATION)
+
 func reset_variables():
 	ship.fuel = ship.MAX_FUEL
 	ship.set_rotation(0)
 	ship.linear_velocity = Vector2(0, 0)
 	ship.angular_velocity = 0
-	set_ship_starting_pos()
 	ship.end_collision_detected = false
 	ship.previous_velocity = Vector2(0, 0)
 	ship.collision_pos_lst = []
-	
+	ship.gravity_scale = 1
+	set_ship_starting_pos()
+	ship_sprite.show()
+	ship.crash_animation_playing = false
+	ship.crash_sound_playing = false
 	ship.reset_process()
 	
 #func _process(delta):
@@ -106,9 +123,8 @@ func reset_variables():
 
 func _on_Ship_game_over():
 	print('boom')
-	reset_variables()
 	present_label(game_over_label)
-
+	freeze_ship()
 
 func _on_Ship_level_completed():
 	print('gg easy')
