@@ -12,6 +12,7 @@ var current_level
 
 var game_over_label = "You lose"
 var level_completed_label = "GG easy"
+var level_label = "Level "
 var event_label
 var label_visible_timer
 var LABEL_VISIBLE_TIME = 1.5
@@ -54,12 +55,12 @@ func _ready():
 	
 	game_over = false
 	
-	load_level1()
+	levels[current_level].call_func()
 
 func present_label(text):
-	set_event_label_pos()
 	event_label.set_text(text)
 	event_label.show()
+	set_event_label_pos()
 	label_visible_timer.start(LABEL_VISIBLE_TIME)
 
 func hide_event_label():
@@ -77,37 +78,35 @@ func disable_level_colliders():
 	for i in level_colliders:
 		i.set_disabled(true)
 
+func load_level_generic():
+	disable_level_colliders()
+	level_colliders[current_level].set_disabled(false)
+	set_ship_starting_pos()
+	present_label(level_label + str(current_level + 1))
+
 func load_level1():
 	sprite.set_texture(preload("res://assets/level1.png"))
 	begin_platform.set_position(Vector2(-1900, 650))
 	end_platform.set_position(Vector2(700, 650))
-	disable_level_colliders()
-	level_colliders[0].set_disabled(false)
-	set_ship_starting_pos()
+	load_level_generic()
 	
 func load_level2():
 	sprite.set_texture(preload("res://assets/level2.png"))
 	begin_platform.set_position(Vector2(-1850, 770))
 	end_platform.set_position(Vector2(1200, 800))
-	disable_level_colliders()
-	level_colliders[1].set_disabled(false)
-	set_ship_starting_pos()
+	load_level_generic()
 	
 func load_level3():
 	sprite.set_texture(preload("res://assets/level3.png"))
 	begin_platform.set_position(Vector2(-1850, 770))
 	end_platform.set_position(Vector2(1400, 900))
-	disable_level_colliders()
-	level_colliders[2].set_disabled(false)
-	set_ship_starting_pos()
+	load_level_generic()
 	
 func load_level4():
 	sprite.set_texture(preload("res://assets/level4.png"))
 	begin_platform.set_position(Vector2(-1875, 770))
 	end_platform.set_position(Vector2(-400, -180))
-	disable_level_colliders()
-	level_colliders[3].set_disabled(false)
-	set_ship_starting_pos()
+	load_level_generic()
 
 func freeze_ship(set_gravity=true):
 	ship.linear_velocity = Vector2(0, 0)
@@ -128,6 +127,7 @@ func reset_variables():
 	ship.gravity_scale = 1
 	if game_over:
 		set_ship_starting_pos()
+		present_label(level_label + str(current_level + 1))
 	else:
 		if (current_level + 1 < len(levels)):
 			current_level += 1

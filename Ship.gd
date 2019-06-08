@@ -57,6 +57,9 @@ var crash_sprite
 var crash_sprite_animation_timer
 var crash_animation_playing
 
+# pause
+var pause_screen
+
 ## functions
 func _ready():
 	var physics_material = PhysicsMaterial.new()
@@ -104,6 +107,9 @@ func _ready():
 	add_child(crash_sprite_animation_timer)
 	crash_sprite_animation_timer.connect("timeout", self, "animate_crash")
 	crash_animation_playing = false
+	
+	pause_screen = $"../CanvasLayer/PauseScreen"
+	pause_screen.hide()
 	
 func animate_crash():
 	if crash_sprite.frame + 1 < crash_sprite.hframes:
@@ -178,6 +184,12 @@ func _integrate_forces(state):
 			end_collision_detected = true
 		var ship_col_pos = (state.get_contact_local_position(i) - position).rotated(deg2rad(-rotation))
 		collision_pos_lst.append(ship_col_pos)
+
+func _unhandled_input(event):
+	if event is InputEventKey:
+		if event.pressed and event.scancode == KEY_ESCAPE and not(get_tree().paused):
+			pause_screen.show()
+			get_tree().paused = true
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
