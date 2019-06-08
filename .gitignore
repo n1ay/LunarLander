@@ -6,3 +6,6 @@
 *.pck
 export_presets.cfg
 LunarLander.zip
+
+# mp3
+*.mp3
