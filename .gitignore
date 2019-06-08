@@ -1,2 +1,8 @@
-# .Godot import
+# Godot import cache
 .import/
+
+# Godot export
+*.exe
+*.pck
+export_presets.cfg
+LunarLander.zip

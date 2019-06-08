@@ -1,15 +1,13 @@
 extends StaticBody2D
 
-var collision_polygon
-# var canvas
 var sprite
-
 var begin_platform
 var end_platform
 
 var ship
 var ship_sprite
 var levels
+var level_colliders
 var current_level
 
 var game_over_label = "You lose"
@@ -18,23 +16,9 @@ var event_label
 var label_visible_timer
 var LABEL_VISIBLE_TIME = 2
 
-signal draw_polygon(vertices)
-
 func _ready():
 	begin_platform = $BeginPlatform
 	end_platform = $EndPlatform
-	
-	collision_polygon = $LevelCollisionPolygon
-
-#	canvas = $LevelCanvas
-#	var vertices = [
-#		Vector2(100, 100),
-#		Vector2(150, 100),
-#		Vector2(150, 150),
-#		Vector2(100, 150)
-#	]
-#	collision_polygon.set_polygon(PoolVector2Array(vertices))
-#	emit_signal("draw_polygon", vertices)
 
 	sprite = $Sprite
 	ship = get_node("/root/World/Ship")
@@ -49,11 +33,19 @@ func _ready():
 		funcref(self, "load_level4")
 	]
 	
+	level_colliders = [
+		$Level1,
+		$Level2,
+		$Level3,
+		$Level4
+	]
+	
 	label_visible_timer = Timer.new()
 	add_child(label_visible_timer)
 	label_visible_timer.connect("timeout", self, "hide_event_label")
 	
 	load_level1()
+	level_colliders[0].set_disabled(false)
 
 func present_label(text):
 	set_event_label_pos()
@@ -120,8 +112,10 @@ func _on_Ship_game_over():
 
 func _on_Ship_level_completed():
 	print('gg easy')
+	level_colliders[current_level].set_disabled(true)
 	if (current_level + 1 < len(levels)):
 		current_level += 1
 		levels[current_level].call_func()
 	reset_variables()
+	level_colliders[current_level].set_disabled(false)
 	present_label(level_completed_label)
