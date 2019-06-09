@@ -10,15 +10,19 @@ var levels
 var level_colliders
 var current_level
 
-var game_over_label = "You lose"
-var level_completed_label = "GG easy"
+var game_over_label = "You crashed"
+var level_completed_label = "level completed"
 var level_label = "Level "
+var game_completed_label = "Game completed"
 var event_label
 var label_visible_timer
 var LABEL_VISIBLE_TIME = 1.5
 
 var reset_level_timer
 var game_over
+
+var game_completed_timer
+var GAME_COMPLETED_TIMER_TIMEOUT = 4
 
 func _ready():
 	begin_platform = $BeginPlatform
@@ -55,13 +59,18 @@ func _ready():
 	
 	game_over = false
 	
+	game_completed_timer = Timer.new()
+	add_child(game_completed_timer)
+	game_completed_timer.connect("timeout", self, "on_game_completed")
+	game_completed_timer.one_shot = true
+	
 	levels[current_level].call_func()
 
-func present_label(text):
+func present_label(text, time=LABEL_VISIBLE_TIME):
 	event_label.set_text(text)
 	event_label.show()
 	set_event_label_pos()
-	label_visible_timer.start(LABEL_VISIBLE_TIME)
+	label_visible_timer.start(time)
 
 func hide_event_label():
 	event_label.hide()
@@ -108,7 +117,7 @@ func load_level4():
 	end_platform.set_position(Vector2(-70, -170))
 	load_level_generic()
 
-func freeze_ship(set_gravity=true):
+func freeze_ship(set_gravity=true, game_completed=false):
 	ship.linear_velocity = Vector2(0, 0)
 	ship.angular_velocity = 0
 	if set_gravity:
@@ -142,6 +151,9 @@ func reset_variables():
 #	pass
 
 
+func on_game_completed():
+	get_tree().change_scene("res://TitleScreen.tscn")
+
 func _on_Ship_game_over():
 	print('boom')
 	present_label(game_over_label)
@@ -150,5 +162,10 @@ func _on_Ship_game_over():
 
 func _on_Ship_level_completed():
 	print('gg easy')
-	freeze_ship(false)
-	present_label(level_completed_label)
+	if (current_level + 1 < len(levels)):
+		freeze_ship(false)
+		present_label(level_completed_label)
+	else:
+		ship.process = false
+		present_label(game_completed_label, GAME_COMPLETED_TIMER_TIMEOUT)
+		game_completed_timer.start(GAME_COMPLETED_TIMER_TIMEOUT)
