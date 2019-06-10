@@ -6,8 +6,10 @@ var end_platform
 
 var ship
 var ship_sprite
+var fuel_bar
 var levels
 var level_colliders
+var level_fuel
 var current_level
 
 var game_over_label = "You crashed"
@@ -31,6 +33,7 @@ func _ready():
 	sprite = $Sprite
 	ship = get_node("/root/World/Ship")
 	ship_sprite = get_node("/root/World/Ship/Sprite")
+	fuel_bar = get_node("/root/World/Ship/Camera2D/CanvasLayer/Control/FuelBar")
 	event_label = get_node("/root/World/EventLabel")
 
 	current_level = 0
@@ -38,14 +41,24 @@ func _ready():
 		funcref(self, "load_level1"),
 		funcref(self, "load_level2"),
 		funcref(self, "load_level3"),
-		funcref(self, "load_level4")
+		funcref(self, "load_level4"),
+		funcref(self, "load_level5")
 	]
 	
 	level_colliders = [
 		$Level1,
 		$Level2,
 		$Level3,
-		$Level4
+		$Level4,
+		$Level5
+	]
+	
+	level_fuel = [
+		100,
+		100,
+		100,
+		100,
+		1000
 	]
 	
 	label_visible_timer = Timer.new()
@@ -72,6 +85,11 @@ func present_label(text, time=LABEL_VISIBLE_TIME):
 	set_event_label_pos()
 	label_visible_timer.start(time)
 
+func set_max_fuel(fuel):
+	ship.fuel = fuel
+	ship.MAX_FUEL = fuel
+	fuel_bar.max_value = fuel
+
 func hide_event_label():
 	event_label.hide()
 
@@ -90,6 +108,7 @@ func disable_level_colliders():
 func load_level_generic():
 	disable_level_colliders()
 	level_colliders[current_level].set_disabled(false)
+	set_max_fuel(level_fuel[current_level])
 	set_ship_starting_pos()
 	present_label(level_label + str(current_level + 1))
 
@@ -116,8 +135,14 @@ func load_level4():
 	begin_platform.set_position(Vector2(-1675, 780))
 	end_platform.set_position(Vector2(-70, -170))
 	load_level_generic()
+	
+func load_level5():
+	sprite.set_texture(preload("res://assets/level5.jpg"))
+	begin_platform.set_position(Vector2(-1220, -1480))
+	end_platform.set_position(Vector2(0, 2950))
+	load_level_generic()
 
-func freeze_ship(set_gravity=true, game_completed=false):
+func freeze_ship(set_gravity=true):
 	ship.linear_velocity = Vector2(0, 0)
 	ship.angular_velocity = 0
 	if set_gravity:
