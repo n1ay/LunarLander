@@ -1,11 +1,12 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://TitleScreen.gd" type="Script" id=1]
 [ext_resource path="res://Title.tscn" type="PackedScene" id=2]
-[ext_resource path="res://NewGameButton.tscn" type="PackedScene" id=3]
-[ext_resource path="res://ExitGameButton.tscn" type="PackedScene" id=4]
-[ext_resource path="res://ParallaxBackground.gd" type="Script" id=5]
-[ext_resource path="res://assets/stars_bg.jpg" type="Texture" id=6]
+[ext_resource path="res://PlayButton.tscn" type="PackedScene" id=3]
+[ext_resource path="res://OptionsButton.tscn" type="PackedScene" id=4]
+[ext_resource path="res://ExitGameButton.tscn" type="PackedScene" id=5]
+[ext_resource path="res://ParallaxBackground.gd" type="Script" id=6]
+[ext_resource path="res://assets/stars_bg.jpg" type="Texture" id=7]
 
 [node name="TitleScreen" type="Control"]
 pause_mode = 2
@@ -29,39 +30,55 @@ rect_min_size = Vector2( 0, 300 )
 [node name="Center" type="HBoxContainer" parent="Menu"]
 margin_top = 304.0
 margin_right = 1389.0
-margin_bottom = 508.0
+margin_bottom = 612.0
 
 [node name="Buttons" type="VBoxContainer" parent="Menu/Center"]
 margin_right = 1389.0
-margin_bottom = 204.0
+margin_bottom = 308.0
 size_flags_horizontal = 3
 
-[node name="NewGame" parent="Menu/Center/Buttons" instance=ExtResource( 3 )]
+[node name="Play" parent="Menu/Center/Buttons" instance=ExtResource( 3 )]
+margin_right = 210.0
 margin_bottom = 100.0
-rect_min_size = Vector2( 450, 100 )
+rect_min_size = Vector2( 210, 100 )
+size_flags_horizontal = 2
+size_flags_vertical = 2
 flat = true
 
-[node name="Exit" parent="Menu/Center/Buttons" instance=ExtResource( 4 )]
+[node name="Options" parent="Menu/Center/Buttons" instance=ExtResource( 4 )]
 margin_top = 104.0
+margin_right = 360.0
 margin_bottom = 204.0
+rect_min_size = Vector2( 360, 100 )
+size_flags_horizontal = 2
+size_flags_vertical = 2
+flat = true
+
+[node name="Exit" parent="Menu/Center/Buttons" instance=ExtResource( 5 )]
+margin_top = 208.0
+margin_right = 200.0
+margin_bottom = 308.0
 rect_min_size = Vector2( 200, 100 )
+size_flags_horizontal = 2
+size_flags_vertical = 2
 flat = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="CanvasLayer"]
-script = ExtResource( 5 )
+script = ExtResource( 6 )
 
 [node name="ParallaxLayer" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
 
 [node name="Background" type="Sprite" parent="CanvasLayer/ParallaxBackground/ParallaxLayer"]
-texture = ExtResource( 6 )
+texture = ExtResource( 7 )
 centered = false
 
 [node name="ParallaxLayer2" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
 
 [node name="Background2" type="Sprite" parent="CanvasLayer/ParallaxBackground/ParallaxLayer2"]
-texture = ExtResource( 6 )
+texture = ExtResource( 7 )
 centered = false
-[connection signal="pressed" from="Menu/Center/Buttons/NewGame" to="." method="_on_NewGame_pressed"]
+[connection signal="pressed" from="Menu/Center/Buttons/Play" to="." method="_on_NewGame_pressed"]
+[connection signal="pressed" from="Menu/Center/Buttons/Options" to="." method="_on_Options_pressed"]
 [connection signal="pressed" from="Menu/Center/Buttons/Exit" to="." method="_on_Exit_pressed"]

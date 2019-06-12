@@ -30,11 +30,9 @@ func _process(delta):
 	
 	if (pos1.x <= -img_size.x):
 		pos1 = pos2 + BG2_STARTING_POS
-		print(pos1, ' ', pos2)
 	bg1.set_position(pos1)
 	
 	if (pos2.x <= -img_size.x):
 		pos2 = pos1 + BG2_STARTING_POS
-		print(pos1, ' ', pos2)
 	bg2.set_position(pos2)
 	

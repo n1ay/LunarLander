@@ -15,6 +15,8 @@ func continue_paused():
 	self.hide()
 
 func _on_Exit_pressed():
+	global.save_state()
+	get_tree().paused = false
 	get_tree().quit()
 
 func _on_MainMenu_pressed():

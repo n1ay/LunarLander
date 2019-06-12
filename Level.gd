@@ -36,7 +36,7 @@ func _ready():
 	fuel_bar = get_node("/root/World/Ship/Camera2D/CanvasLayer/Control/FuelBar")
 	event_label = get_node("/root/World/EventLabel")
 
-	current_level = 0
+	current_level = global.play_level
 	levels = [
 		funcref(self, "load_level1"),
 		funcref(self, "load_level2"),
@@ -190,6 +190,7 @@ func _on_Ship_level_completed():
 	if (current_level + 1 < len(levels)):
 		freeze_ship(false)
 		present_label(level_completed_label)
+		global.unlocked_level = current_level + 1
 	else:
 		ship.process = false
 		present_label(game_completed_label, GAME_COMPLETED_TIMER_TIMEOUT)

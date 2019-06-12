@@ -2,7 +2,7 @@
 
 [ext_resource path="res://assets/DejaVuSans-Bold-70.res" type="DynamicFont" id=1]
 
-[node name="NewGame" type="Button"]
+[node name="Play" type="Button"]
 margin_right = 1389.0
 margin_bottom = 20.0
 
@@ -11,4 +11,5 @@ margin_right = 450.0
 margin_bottom = 100.0
 rect_min_size = Vector2( 450, 100 )
 custom_fonts/font = ExtResource( 1 )
-text = "NEW GAME"
+text = "Play"
+uppercase = true

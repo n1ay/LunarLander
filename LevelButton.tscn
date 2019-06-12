@@ -1,0 +1,34 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://assets/DejaVuSans-Bold-70.res" type="DynamicFont" id=1]
+
+[node name="ColorRectBottom" type="ColorRect"]
+margin_right = 120.0
+margin_bottom = 120.0
+rect_min_size = Vector2( 120, 120 )
+
+[node name="ColorRectTop" type="ColorRect" parent="."]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 110.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 100, 100 )
+color = Color( 0, 0, 0, 1 )
+
+[node name="LevelLabel" type="Label" parent="ColorRectTop"]
+margin_left = -10.0
+margin_top = -10.0
+margin_right = 40.0
+margin_bottom = 14.0
+rect_min_size = Vector2( 120, 120 )
+size_flags_horizontal = 4
+custom_fonts/font = ExtResource( 1 )
+text = "1"
+align = 1
+valign = 1
+
+[node name="Button" type="Button" parent="."]
+margin_right = 12.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 120, 120 )
+flat = true

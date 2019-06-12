@@ -190,6 +190,7 @@ func _unhandled_input(event):
 		if event.pressed and event.scancode == KEY_ESCAPE and not(get_tree().paused):
 			pause_screen.show()
 			get_tree().paused = true
+			global.save_state()
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -206,13 +207,15 @@ func _process(delta):
 			showFlames.append($FlameBottom)
 			fuel -= USE_FUEL
 			
-		if Input.is_action_pressed("ui_right") and not(Input.is_action_pressed("ui_left")):
+		if (not(global.invert_left_right_controls) and Input.is_action_pressed("ui_right") and not(Input.is_action_pressed("ui_left")))\
+				or (global.invert_left_right_controls and Input.is_action_pressed("ui_left") and not(Input.is_action_pressed("ui_right"))):
 			var offset_right = Vector2(-POSITION_OFFSET, POSITION_OFFSET)
 			apply_impulse(offset_right.rotated(rotation), -THROTTLE_IMPULSE * direction_rot_by_right_angle * delta)
 			showFlames.append($FlameLeft)
 			fuel -= USE_FUEL
 			
-		if Input.is_action_pressed("ui_left") and not(Input.is_action_pressed("ui_right")):
+		if (not(global.invert_left_right_controls) and Input.is_action_pressed("ui_left") and not(Input.is_action_pressed("ui_right")))\
+				or (global.invert_left_right_controls and Input.is_action_pressed("ui_right") and not(Input.is_action_pressed("ui_left"))):
 			var offset_left = Vector2(POSITION_OFFSET, POSITION_OFFSET)
 			apply_impulse(offset_left.rotated(rotation), THROTTLE_IMPULSE * direction_rot_by_right_angle * delta)
 			showFlames.append($FlameRight)
