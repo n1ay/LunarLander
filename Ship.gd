@@ -6,7 +6,7 @@ var FRICTION = 0.75
 var POSITION_OFFSET = 30
 var FLAME_TIMER_TICK = 0.1
 var MAX_FUEL = 100
-var USE_FUEL = 0.1
+var USE_FUEL = 5
 var CRITICAL_VELOCITY = 500
 var CRITICAL_Y_POS = 5
 var LEVEL_COMPLETED_MAX_VELOCITY_ALLOWED = 0.1
@@ -205,22 +205,23 @@ func _process(delta):
 			var offset_up = Vector2(0, POSITION_OFFSET)
 			apply_impulse(offset_up.rotated(rotation), -THROTTLE_IMPULSE * direction * delta)
 			showFlames.append($FlameBottom)
-			fuel -= USE_FUEL
+			fuel -= USE_FUEL * delta
 			
 		if (not(global.invert_left_right_controls) and Input.is_action_pressed("ui_right") and not(Input.is_action_pressed("ui_left")))\
 				or (global.invert_left_right_controls and Input.is_action_pressed("ui_left") and not(Input.is_action_pressed("ui_right"))):
 			var offset_right = Vector2(-POSITION_OFFSET, POSITION_OFFSET)
 			apply_impulse(offset_right.rotated(rotation), -THROTTLE_IMPULSE * direction_rot_by_right_angle * delta)
 			showFlames.append($FlameLeft)
-			fuel -= USE_FUEL
+			fuel -= USE_FUEL * delta
 			
 		if (not(global.invert_left_right_controls) and Input.is_action_pressed("ui_left") and not(Input.is_action_pressed("ui_right")))\
 				or (global.invert_left_right_controls and Input.is_action_pressed("ui_right") and not(Input.is_action_pressed("ui_left"))):
 			var offset_left = Vector2(POSITION_OFFSET, POSITION_OFFSET)
 			apply_impulse(offset_left.rotated(rotation), THROTTLE_IMPULSE * direction_rot_by_right_angle * delta)
 			showFlames.append($FlameRight)
-			fuel -= USE_FUEL
+			fuel -= USE_FUEL * delta
 	
+	print(delta)
 	updateFlames(showFlames)
 	if (fuel_previous != fuel):
 		fuel_previous = fuel
