@@ -221,7 +221,6 @@ func _process(delta):
 			showFlames.append($FlameRight)
 			fuel -= USE_FUEL * delta
 	
-	print(delta)
 	updateFlames(showFlames)
 	if (fuel_previous != fuel):
 		fuel_previous = fuel
