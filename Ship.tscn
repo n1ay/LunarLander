@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Ship.gd" type="Script" id=1]
 [ext_resource path="res://assets/ship.png" type="Texture" id=2]
@@ -7,36 +7,35 @@
 [ext_resource path="res://assets/crash2.ogg" type="AudioStream" id=5]
 [ext_resource path="res://assets/crash.png" type="Texture" id=6]
 
+[sub_resource type="ConvexPolygonShape2D" id=1]
+points = PoolVector2Array( 0, -65, 30, -30, 50, 0, 50, 60, -50, 60, -50, 0, -30, -30 )
+
 [node name="Ship" type="RigidBody2D"]
 mode = 2
 contacts_reported = 3
 contact_monitor = true
 script = ExtResource( 1 )
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
-scale = Vector2( 0.25, 0.25 )
-polygon = PoolVector2Array( -178.614, 158.665, -132.767, 90.4015, -141.293, 75.7372, -142.998, 61.4139, -176.76, 61.0729, -185.968, 52.5471, -187.673, 41.9752, -183.24, 32.7673, -174.714, 28.675, -143.68, 28.675, -142.545, 17.5546, -140.173, 5.32297, -128.453, -7.86238, -119.88, -14.7071, -108.919, -18.606, -108.164, -49.1279, -102.484, -76.266, -86.7062, -98.3551, -62.0927, -116.026, -34.9546, -126.755, -9.70996, -128.649, -9.0788, -141.271, -26.7501, -142.314, -48.8392, -149.257, -60.1993, -162.51, -59.5682, -177.026, -47.577, -184.599, -34.9546, -182.706, -24.3059, -174.733, -9.01073, -174.18, 3.33598, -182.473, 9.97003, -196.662, 7.02158, -211.404, -1.63956, -223.567, -0.718155, -234.624, 8.4958, -242.916, 20.6582, -242.916, 31.3464, -232.412, 37.6119, -220.25, 40.9289, -207.166, 41.4818, -192.608, 37.4276, -178.971, 32.4521, -167.73, 24.1595, -158.332, 23.9753, -128.072, 40.3761, -126.966, 58.9883, -122.544, 80.3666, -112.302, 96.3016, -96.0268, 80.2381, -112.09, 108.066, -78.3796, 114.552, -61.225, 117.052, -41.5033, 118.163, -17.8927, 138.718, -5.94852, 147.132, 8.81423, 149.452, 18.5567, 149.916, 28.7632, 185.174, 28.7632, 194.917, 34.7943, 197.7, 45.0007, 193.989, 56.135, 185.638, 61.2382, 150.843, 61.2382, 149.916, 70.9807, 146.668, 80.2593, 140.173, 89.0739, 185.638, 155.88, 187.03, 210.623, 213.938, 211.551, 220.897, 217.582, 224.608, 226.861, 220.897, 235.675, 213.474, 242.634, 134.606, 244.026, 126.719, 240.315, 121.616, 232.428, 121.616, 223.149, 127.183, 216.19, 134.142, 211.551, 155.019, 211.087, 155.019, 168.406, 112.801, 104.384, 20.4794, 104.848, 20.0155, 178.148, 45.5316, 178.148, 52.9545, 183.715, 57.1298, 192.066, 57.1298, 201.809, 48.3152, 209.232, 41.3562, 212.015, -33.8002, 211.551, -42.151, 205.52, -46.3263, 198.561, -44.4706, 188.819, -37.5117, 180.468, -26.3774, 178.148, -13.3874, 178.148, -13.8513, 105.775, -102.926, 104.848, -145.607, 168.87, -145.143, 211.551, -121.019, 211.087, -112.668, 219.902, -111.74, 231.5, -117.771, 240.315, -125.658, 244.49, -201.592, 244.49, -209.015, 240.779, -213.121, 232.508, -213.574, 223.684, -208.823, 216.671, -200.225, 211.693, -187.329, 211.015, -178.506, 211.467 )
-
 [node name="Sprite" type="Sprite" parent="."]
 scale = Vector2( 0.25, 0.25 )
 texture = ExtResource( 2 )
 
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
 [node name="FlameBottom" type="Sprite" parent="."]
-visible = false
 position = Vector2( 0, 115 )
 rotation = 3.14159
 texture = ExtResource( 3 )
 hframes = 6
 
 [node name="FlameLeft" type="Sprite" parent="."]
-visible = false
 position = Vector2( -100, 40 )
 rotation = -1.74533
 texture = ExtResource( 3 )
 hframes = 6
 
 [node name="FlameRight" type="Sprite" parent="."]
-visible = false
 position = Vector2( 105, 40 )
 rotation = 1.74533
 scale = Vector2( -1, 1 )
@@ -44,14 +43,11 @@ texture = ExtResource( 3 )
 hframes = 6
 
 [node name="EngineAudioPlayer" type="AudioStreamPlayer2D" parent="."]
-visible = false
 stream = ExtResource( 4 )
 
 [node name="CrashAudioPlayer" type="AudioStreamPlayer2D" parent="."]
-visible = false
 stream = ExtResource( 5 )
 
 [node name="CrashSprite" type="Sprite" parent="."]
-visible = false
 texture = ExtResource( 6 )
 hframes = 8
