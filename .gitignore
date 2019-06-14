@@ -9,3 +9,6 @@ LunarLander.zip
 
 # mp3
 *.mp3
+
+# save file
+lunar_lander.dat
