@@ -21,6 +21,7 @@ var ZERO_VECTOR = Vector2(0, 0)
 signal fuel_update(value)
 signal level_completed()
 signal game_over()
+signal no_fuel()
 
 ## variables
 var reset_process_timer
@@ -84,7 +85,7 @@ func _ready():
 		
 	no_fuel_timer = Timer.new()
 	add_child(no_fuel_timer)
-	no_fuel_timer.connect("timeout", self, "emit_signal", ["game_over"])
+	no_fuel_timer.connect("timeout", self, "emit_signal", ["no_fuel"])
 	no_fuel_timer.one_shot = true
 
 	process = true

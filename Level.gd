@@ -16,6 +16,7 @@ var game_over_label = "You crashed"
 var level_completed_label = "level completed"
 var level_label = "Level "
 var game_completed_label = "Game completed"
+var no_fuel_label = "End of fuel"
 var event_label
 var label_visible_timer
 var LABEL_VISIBLE_TIME = 1.5
@@ -195,3 +196,10 @@ func _on_Ship_level_completed():
 		ship.process = false
 		present_label(game_completed_label, GAME_COMPLETED_TIMER_TIMEOUT)
 		game_completed_timer.start(GAME_COMPLETED_TIMER_TIMEOUT)
+
+
+func _on_Ship_no_fuel():
+	print('no_fuel')
+	present_label(no_fuel_label)
+	game_over = true
+	freeze_ship()

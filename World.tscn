@@ -101,3 +101,4 @@ visible = false
 [connection signal="fuel_update" from="Ship" to="Ship/Camera2D/CanvasLayer/Control/FuelBar" method="_on_Ship_fuel_update"]
 [connection signal="game_over" from="Ship" to="LevelGenerator/Level" method="_on_Ship_game_over"]
 [connection signal="level_completed" from="Ship" to="LevelGenerator/Level" method="_on_Ship_level_completed"]
+[connection signal="no_fuel" from="Ship" to="LevelGenerator/Level" method="_on_Ship_no_fuel"]
