@@ -31,7 +31,7 @@ func _ready():
 
 func start_level(level_number):
 	global.play_level = level_number
-	get_tree().change_scene("res://World.tscn")
+	get_tree().change_scene("res://HowToPlayScene.tscn")
 
 func _on_BackButton_pressed():
 	get_tree().change_scene("res://TitleScreen.tscn")
